@@ -1,0 +1,6 @@
+{
+  "name": "RentHub",
+  "description": "Apartments, condos, and homes for rent with interactive filters, property details, scheduling, and renter guides.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
