@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Home, Heart, Calculator, Menu, X, Building2, User, Sparkles } from 'lucide-react';
+import { User as FirebaseUser } from 'firebase/auth';
+import { Heart, Calculator, Menu, X, Building2, User, Sparkles, LogOut, ChevronDown } from 'lucide-react';
 
 interface HeaderProps {
   activeNav: string;
@@ -9,6 +10,9 @@ interface HeaderProps {
   onOpenCalculator: () => void;
   onOpenAuth: (mode: 'login' | 'signup') => void;
   onOpenManageRentals: () => void;
+  user: FirebaseUser | null;
+  onOpenUserAccount: () => void;
+  onLogout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,9 +22,13 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSaved,
   onOpenCalculator,
   onOpenAuth,
-  onOpenManageRentals
+  onOpenManageRentals,
+  user,
+  onOpenUserAccount,
+  onLogout
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const navItems = [
     { id: 'Rent', label: 'Rent' },
@@ -30,6 +38,8 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'Find an Agent', label: 'Find an Agent' },
     { id: 'My Home', label: 'My Home' },
   ];
+
+  const userInitial = (user?.displayName || user?.email || 'U').charAt(0).toUpperCase();
 
   return (
     <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 shrink-0">
@@ -76,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Actions */}
-        <div className="hidden sm:flex items-center gap-4 lg:gap-6 text-sm">
+        <div className="hidden sm:flex items-center gap-3 lg:gap-5 text-sm">
           <button
             onClick={onOpenCalculator}
             id="header-affordability-calc-btn"
@@ -111,28 +121,97 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => onOpenAuth('login')}
-              id="header-login-btn"
-              className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md transition cursor-pointer"
-            >
-              Sign In
-            </button>
+          {/* User Logged In vs Logged Out State */}
+          {user ? (
+            <div className="relative">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                id="user-profile-menu-btn"
+                className="flex items-center gap-2 p-1.5 pl-2 rounded-full border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition cursor-pointer"
+              >
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || 'Account'}
+                    className="w-7 h-7 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">
+                    {userInitial}
+                  </div>
+                )}
+                <span className="text-xs font-semibold text-slate-800 max-w-[100px] truncate hidden md:inline">
+                  {user.displayName || user.email?.split('@')[0]}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 mr-1" />
+              </button>
 
-            <button
-              onClick={() => onOpenAuth('signup')}
-              id="header-signup-btn"
-              className="bg-slate-900 text-white px-4 lg:px-5 py-2 rounded-md text-sm font-semibold hover:bg-slate-800 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
-            >
-              <User className="w-3.5 h-3.5" />
-              <span>Register</span>
-            </button>
-          </div>
+              {userDropdownOpen && (
+                <div
+                  className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-xl py-1.5 z-50 text-xs animate-in fade-in"
+                  onClick={() => setUserDropdownOpen(false)}
+                >
+                  <div className="px-3.5 py-2 border-b border-slate-100">
+                    <p className="font-bold text-slate-900 truncate">{user.displayName || 'My Account'}</p>
+                    <p className="text-slate-500 text-[11px] truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={onOpenUserAccount}
+                    className="w-full text-left px-3.5 py-2 hover:bg-slate-50 font-medium text-slate-700 flex items-center gap-2 cursor-pointer"
+                  >
+                    <User className="w-3.5 h-3.5 text-slate-500" />
+                    <span>My Account & Tours</span>
+                  </button>
+                  <button
+                    onClick={onOpenSaved}
+                    className="w-full text-left px-3.5 py-2 hover:bg-slate-50 font-medium text-slate-700 flex items-center gap-2 cursor-pointer"
+                  >
+                    <Heart className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Saved Homes ({savedCount})</span>
+                  </button>
+                  <button
+                    onClick={onLogout}
+                    className="w-full text-left px-3.5 py-2 hover:bg-red-50 text-red-600 font-medium flex items-center gap-2 border-t border-slate-100 cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onOpenAuth('login')}
+                id="header-login-btn"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md transition cursor-pointer"
+              >
+                Sign In
+              </button>
+
+              <button
+                onClick={() => onOpenAuth('signup')}
+                id="header-signup-btn"
+                className="bg-slate-900 text-white px-4 lg:px-5 py-2 rounded-md text-sm font-semibold hover:bg-slate-800 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>Register</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Mobile menu toggle */}
         <div className="flex sm:hidden items-center gap-2">
+          {user ? (
+            <button
+              onClick={onOpenUserAccount}
+              className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center"
+            >
+              {userInitial}
+            </button>
+          ) : null}
+
           <button
             onClick={onOpenSaved}
             id="mobile-saved-trigger"
@@ -160,6 +239,29 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 shadow-lg">
+          {user && (
+            <div className="p-3 bg-slate-50 rounded-md border border-slate-200 flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">
+                  {userInitial}
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-900">{user.displayName || 'Member'}</p>
+                  <p className="text-[10px] text-slate-500">{user.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  onOpenUserAccount();
+                  setMobileMenuOpen(false);
+                }}
+                className="text-xs text-red-600 font-semibold"
+              >
+                Profile
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-2 text-sm">
             {navItems.map((item) => (
               <button
@@ -206,26 +308,38 @@ export const Header: React.FC<HeaderProps> = ({
               Manage & Advertise Rentals
             </button>
 
-            <div className="flex gap-2 pt-2">
+            {user ? (
               <button
                 onClick={() => {
-                  onOpenAuth('login');
+                  onLogout();
                   setMobileMenuOpen(false);
                 }}
-                className="flex-1 py-2 text-sm font-semibold border border-slate-200 text-slate-700 rounded-md hover:bg-slate-50"
+                className="w-full py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-md border border-red-200 text-center"
               >
-                Sign In
+                Sign Out ({user.email})
               </button>
-              <button
-                onClick={() => {
-                  onOpenAuth('signup');
-                  setMobileMenuOpen(false);
-                }}
-                className="flex-1 py-2 text-sm font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-md shadow-xs"
-              >
-                Register
-              </button>
-            </div>
+            ) : (
+              <div className="flex gap-2 pt-2">
+                <button
+                  onClick={() => {
+                    onOpenAuth('login');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex-1 py-2 text-sm font-semibold border border-slate-200 text-slate-700 rounded-md hover:bg-slate-50"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    onOpenAuth('signup');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex-1 py-2 text-sm font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-md shadow-xs"
+                >
+                  Register
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

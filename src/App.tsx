@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { User as FirebaseUser } from 'firebase/auth';
 import { Property, FilterState, InquiryFormData, AdviceArticle } from './types';
 import { INITIAL_PROPERTIES, POPULAR_CITIES, ADVICE_ARTICLES } from './data/listingsData';
 import { Header } from './components/Header';
@@ -15,14 +16,24 @@ import { RentCalculatorModal } from './components/RentCalculatorModal';
 import { AdviceSection } from './components/AdviceSection';
 import { Footer } from './components/Footer';
 import { AuthModal } from './components/AuthModal';
+import { UserAccountModal } from './components/UserAccountModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { SearchX, Sparkles, Building, CheckCircle, RefreshCw } from 'lucide-react';
+import {
+  subscribeToAuth,
+  logOut,
+  fetchUserFavorites,
+  addFavoriteToFirestore,
+  removeFavoriteFromFirestore,
+  recordInquiryInFirestore
+} from './services/authService';
 
 export default function App() {
   // State
   const [properties] = useState<Property[]>(INITIAL_PROPERTIES);
   const [activeNav, setActiveNav] = useState<string>('Rent');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
 
   const [filters, setFilters] = useState<FilterState>({
     searchTerm: '',
@@ -43,7 +54,6 @@ export default function App() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          // Clean up old default [1, 4] seed if present
           if (parsed.length === 2 && parsed.includes(1) && parsed.includes(4)) {
             localStorage.removeItem('renthub_saved_ids');
             return [];
@@ -64,6 +74,7 @@ export default function App() {
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const [isUserAccountOpen, setIsUserAccountOpen] = useState(false);
   const [authModal, setAuthModal] = useState<{ isOpen: boolean; mode: 'login' | 'signup' | 'manage' }>({
     isOpen: false,
     mode: 'login'
@@ -84,23 +95,70 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Toggle favorite
-  const handleToggleSave = (property: Property) => {
-    setSavedPropertyIds((prev) => {
-      const exists = prev.includes(property.id);
-      let updated: number[];
-      if (exists) {
-        updated = prev.filter((id) => id !== property.id);
-        addToast('info', 'Removed from Saved', `${property.name} removed from your saved list.`);
-      } else {
-        updated = [...prev, property.id];
-        addToast('success', 'Property Saved!', `${property.name} added to your saved favorites.`);
+  // Auth State Listener & Firestore Favorites Synchronization
+  useEffect(() => {
+    const unsubscribe = subscribeToAuth(async (user) => {
+      setCurrentUser(user);
+      if (user) {
+        try {
+          const remoteFavorites = await fetchUserFavorites(user.uid);
+          if (remoteFavorites.length > 0) {
+            setSavedPropertyIds(remoteFavorites);
+            localStorage.setItem('renthub_saved_ids', JSON.stringify(remoteFavorites));
+          } else {
+            // Push any local favorites into user's firestore on initial sync
+            const currentLocal = savedPropertyIds;
+            for (const propId of currentLocal) {
+              const p = properties.find((item) => item.id === propId);
+              if (p) {
+                await addFavoriteToFirestore(user.uid, {
+                  id: p.id,
+                  name: p.name,
+                  price: p.price,
+                  image: p.image,
+                  address: p.address
+                });
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error synchronizing user favorites:', err);
+        }
       }
-      try {
-        localStorage.setItem('renthub_saved_ids', JSON.stringify(updated));
-      } catch {}
-      return updated;
     });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Toggle favorite with Firestore + localStorage persistence
+  const handleToggleSave = async (property: Property) => {
+    const exists = savedPropertyIds.includes(property.id);
+    let updated: number[];
+
+    if (exists) {
+      updated = savedPropertyIds.filter((id) => id !== property.id);
+      addToast('info', 'Removed from Saved', `${property.name} removed from your saved list.`);
+      if (currentUser) {
+        await removeFavoriteFromFirestore(currentUser.uid, property.id);
+      }
+    } else {
+      updated = [...savedPropertyIds, property.id];
+      addToast('success', 'Property Saved!', `${property.name} added to your saved favorites.`);
+      if (currentUser) {
+        await addFavoriteToFirestore(currentUser.uid, {
+          id: property.id,
+          name: property.name,
+          price: property.price,
+          image: property.image,
+          address: property.address
+        });
+      }
+    }
+
+    setSavedPropertyIds(updated);
+    try {
+      localStorage.setItem('renthub_saved_ids', JSON.stringify(updated));
+    } catch {}
   };
 
   // Filter properties
@@ -216,22 +274,39 @@ export default function App() {
     addToast('info', 'Filters Reset', 'All filter constraints have been cleared.');
   };
 
-  const handleContactSubmit = (data: InquiryFormData, property: Property) => {
+  const handleContactSubmit = async (data: InquiryFormData, property: Property) => {
+    if (currentUser) {
+      await recordInquiryInFirestore({
+        ...data,
+        userId: currentUser.uid,
+        propertyId: property.id,
+        propertyName: property.name,
+        createdAt: new Date().toISOString(),
+        status: 'pending'
+      });
+    }
+
     addToast(
       'success',
       'Inquiry Sent!',
       `Thank you ${data.fullName || 'renter'}! Your ${
         data.inquiryType === 'tour' ? 'tour request' : 'inquiry'
-      } for ${property.name} has been dispatched to ${property.managed}.`
+      } for ${property.name} has been recorded in your account & sent to ${property.managed}.`
     );
   };
 
   const handleAuthSuccess = (email: string, mode: string) => {
     addToast(
       'success',
-      mode === 'login' ? 'Signed In' : mode === 'signup' ? 'Account Created' : 'Management Access Granted',
-      `Welcome to RentHub! Signed in as ${email}.`
+      mode === 'login' ? 'Signed In' : mode === 'signup' ? 'Account Created' : 'Welcome!',
+      `Welcome to RentHub! Logged in as ${email}.`
     );
+  };
+
+  const handleLogout = async () => {
+    await logOut();
+    setCurrentUser(null);
+    addToast('info', 'Signed Out', 'You have been signed out of your account.');
   };
 
   return (
@@ -248,6 +323,9 @@ export default function App() {
         onOpenCalculator={() => setIsCalculatorOpen(true)}
         onOpenAuth={(mode) => setAuthModal({ isOpen: true, mode })}
         onOpenManageRentals={() => setAuthModal({ isOpen: true, mode: 'manage' })}
+        user={currentUser}
+        onOpenUserAccount={() => setIsUserAccountOpen(true)}
+        onLogout={handleLogout}
       />
 
       <main className="flex-1">
@@ -413,7 +491,12 @@ export default function App() {
           const prop = properties.find((p) => p.id === id);
           if (prop) handleToggleSave(prop);
         }}
-        onClearAll={() => {
+        onClearAll={async () => {
+          if (currentUser) {
+            for (const propId of savedPropertyIds) {
+              await removeFavoriteFromFirestore(currentUser.uid, propId);
+            }
+          }
           setSavedPropertyIds([]);
           try {
             localStorage.removeItem('renthub_saved_ids');
@@ -445,6 +528,23 @@ export default function App() {
         onClose={() => setAuthModal({ ...authModal, isOpen: false })}
         initialMode={authModal.mode}
         onSuccess={handleAuthSuccess}
+      />
+
+      <UserAccountModal
+        isOpen={isUserAccountOpen}
+        onClose={() => setIsUserAccountOpen(false)}
+        user={currentUser}
+        savedProperties={savedPropertiesList}
+        onSelectProperty={(prop) => setSelectedPropertyForDetails(prop)}
+        onRemoveFavorite={async (id) => {
+          const prop = properties.find((p) => p.id === id);
+          if (prop) handleToggleSave(prop);
+        }}
+        onLogout={handleLogout}
+        onOpenSavedDrawer={() => {
+          setIsUserAccountOpen(false);
+          setIsFavoritesOpen(true);
+        }}
       />
     </div>
   );

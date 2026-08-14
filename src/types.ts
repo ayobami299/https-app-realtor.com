@@ -94,3 +94,22 @@ export interface InquiryFormData {
   tourTime?: string;
   preferredBeds?: string;
 }
+
+export interface AuthUserProfile {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL?: string | null;
+  role?: 'renter' | 'landlord';
+  phone?: string;
+}
+
+export interface UserInquiryRecord extends InquiryFormData {
+  id?: string;
+  userId: string;
+  propertyId: number;
+  propertyName: string;
+  createdAt: string;
+  status: 'pending' | 'confirmed' | 'completed';
+}
+

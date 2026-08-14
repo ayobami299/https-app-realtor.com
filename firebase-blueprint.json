@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "users": {
+      "title": "Users",
+      "description": "User account profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string" },
+        "phone": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "favorites": {
+      "title": "Saved Favorites",
+      "description": "User saved property listings",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "propertyId": { "type": "number" },
+        "propertyName": { "type": "string" },
+        "propertyPrice": { "type": "string" },
+        "propertyImage": { "type": "string" },
+        "propertyAddress": { "type": "string" },
+        "savedAt": { "type": "string" }
+      },
+      "required": ["userId", "propertyId", "savedAt"]
+    },
+    "inquiries": {
+      "title": "Inquiries and Tour Bookings",
+      "description": "Tour bookings and property inquiries submitted by users",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "propertyId": { "type": "number" },
+        "propertyName": { "type": "string" },
+        "inquiryType": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "tourDate": { "type": "string" },
+        "tourTime": { "type": "string" },
+        "preferredBeds": { "type": "string" },
+        "moveInDate": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "propertyId", "fullName", "email", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "entity": "users",
+      "schema": {
+        "$ref": "#/entities/users"
+      },
+      "description": "User profiles accessed by the owner"
+    },
+    "/favorites/{favoriteId}": {
+      "entity": "favorites",
+      "schema": {
+        "$ref": "#/entities/favorites"
+      },
+      "description": "Saved properties mapped to user"
+    },
+    "/inquiries/{inquiryId}": {
+      "entity": "inquiries",
+      "schema": {
+        "$ref": "#/entities/inquiries"
+      },
+      "description": "User inquiries and tours"
+    }
+  }
+}
