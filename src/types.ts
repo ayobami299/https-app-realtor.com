@@ -48,6 +48,7 @@ export interface Property {
   transitScore: number;
   deposit: string;
   parkingFee?: string;
+  sourceUrl?: string;
 }
 
 export interface PopularCity {

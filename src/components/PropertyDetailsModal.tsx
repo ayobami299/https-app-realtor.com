@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Property, FloorPlan } from '../types';
 import {
   X,
@@ -15,7 +15,10 @@ import {
   ChevronRight,
   Calculator,
   Compass,
-  Star
+  Star,
+  ExternalLink,
+  Play,
+  Pause
 } from 'lucide-react';
 
 interface PropertyDetailsModalProps {
@@ -36,13 +39,34 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
   onContact
 }) => {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [isPlayingSlideshow, setIsPlayingSlideshow] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<FloorPlan | null>(null);
   const [includeParking, setIncludeParking] = useState(false);
   const [includePet, setIncludePet] = useState(false);
 
+  const images = property?.images && property.images.length > 0 ? property.images : (property ? [property.image] : []);
+
+  // Autoplay slideshow timer
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isPlayingSlideshow && images.length > 1) {
+      interval = setInterval(() => {
+        setActiveImageIdx((prev) => (prev + 1) % images.length);
+      }, 3000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlayingSlideshow, images.length]);
+
+  // Reset slide index when opening a new property
+  useEffect(() => {
+    setActiveImageIdx(0);
+    setIsPlayingSlideshow(false);
+  }, [property?.id, isOpen]);
+
   if (!isOpen || !property) return null;
 
-  const images = property.images && property.images.length > 0 ? property.images : [property.image];
   const activePlan = selectedPlan || (property.floorPlans && property.floorPlans[0]) || null;
   const baseRent = activePlan ? activePlan.price : property.priceMin;
   const parkingCost = includeParking ? 50 : 0;
@@ -91,36 +115,80 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
 
         {/* Scrollable Modal Body */}
         <div className="overflow-y-auto p-6 space-y-8 text-sm">
-          {/* Gallery with Navigation */}
+          {/* Gallery with Slide Mode & Navigation */}
           <div className="space-y-3">
-            <div className="relative rounded-lg overflow-hidden h-72 sm:h-96 bg-slate-900">
+            <div className="relative rounded-lg overflow-hidden h-72 sm:h-96 bg-slate-900 group/gallery">
               <img
+                key={activeImageIdx}
                 src={images[activeImageIdx]}
                 alt={`${property.name} photo ${activeImageIdx + 1}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-opacity duration-300"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+
+              {/* Slideshow Autoplay Button Top-Right */}
+              {images.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setIsPlayingSlideshow(!isPlayingSlideshow)}
+                  id="toggle-slideshow-btn"
+                  className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white text-xs font-medium px-2.5 py-1.5 rounded-md backdrop-blur-xs flex items-center gap-1.5 border border-white/20 transition cursor-pointer z-10"
+                >
+                  {isPlayingSlideshow ? (
+                    <>
+                      <Pause className="w-3.5 h-3.5 text-red-400" />
+                      <span>Pause Slide</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Play Slide</span>
+                    </>
+                  )}
+                </button>
+              )}
 
               {images.length > 1 && (
                 <>
                   <button
                     onClick={() => setActiveImageIdx((p) => (p === 0 ? images.length - 1 : p - 1))}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-md bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer shadow-xs border border-slate-700"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-md bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer shadow-xs border border-slate-700 z-10"
+                    aria-label="Previous image"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setActiveImageIdx((p) => (p === images.length - 1 ? 0 : p + 1))}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-md bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer shadow-xs border border-slate-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-md bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer shadow-xs border border-slate-700 z-10"
+                    aria-label="Next image"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-5 h-5" />
                   </button>
                 </>
               )}
 
+              {/* Slide Dots Indicator inside main viewport */}
+              {images.length > 1 && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/50 backdrop-blur-xs px-2.5 py-1 rounded-full border border-white/10">
+                  {images.map((_, dotIdx) => (
+                    <button
+                      key={dotIdx}
+                      type="button"
+                      onClick={() => setActiveImageIdx(dotIdx)}
+                      className={`transition-all rounded-full cursor-pointer ${
+                        activeImageIdx === dotIdx
+                          ? 'w-5 h-2 bg-red-500'
+                          : 'w-2 h-2 bg-white/60 hover:bg-white'
+                      }`}
+                      aria-label={`Go to photo ${dotIdx + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+
               {/* Bottom badging on image */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-                <div className="flex flex-wrap gap-1.5">
+              <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between pointer-events-none">
+                <div className="flex flex-wrap gap-1.5 pointer-events-auto">
                   {property.badges.map((b) => (
                     <span key={b} className="bg-red-600 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow-xs">
                       {b}
@@ -132,7 +200,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                     </span>
                   )}
                 </div>
-                <span className="bg-slate-900/80 text-white text-xs font-medium px-2.5 py-1 rounded-md backdrop-blur-xs border border-slate-700">
+                <span className="bg-slate-900/80 text-white text-xs font-medium px-2.5 py-1 rounded-md backdrop-blur-xs border border-slate-700 pointer-events-auto">
                   {activeImageIdx + 1} of {images.length} Photos
                 </span>
               </div>
@@ -140,16 +208,16 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
 
             {/* Thumbnail Row */}
             {images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
                 {images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIdx(idx)}
-                    className={`relative w-20 h-14 rounded-md overflow-hidden shrink-0 border transition cursor-pointer ${
-                      activeImageIdx === idx ? 'border-red-600 ring-2 ring-red-500/20' : 'border-transparent opacity-70 hover:opacity-100'
+                    className={`relative w-20 h-14 rounded-md overflow-hidden shrink-0 border-2 transition cursor-pointer ${
+                      activeImageIdx === idx ? 'border-red-600 ring-2 ring-red-500/30 opacity-100 scale-102' : 'border-slate-200 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+                    <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -206,7 +274,21 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
 
           {/* Description */}
           <div>
-            <h3 className="font-bold text-base text-slate-900 mb-2">About {property.name}</h3>
+            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+              <h3 className="font-bold text-base text-slate-900">About {property.name}</h3>
+              {property.sourceUrl && (
+                <a
+                  href={property.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  id="property-source-link"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition border border-blue-200/60"
+                >
+                  <span>View Original Listing on Zillow</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+            </div>
             <p className="text-slate-600 leading-relaxed">{property.description}</p>
           </div>
 

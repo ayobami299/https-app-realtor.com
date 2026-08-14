@@ -1,4 +1,8 @@
 import { Property, PopularCity, AdviceArticle } from '../types';
+import oldStageFront from '../assets/images/old_stage_front_1786745901385.jpg';
+import oldStageSunflower from '../assets/images/old_stage_sunflower_1786745912487.jpg';
+import oldStageHallway from '../assets/images/old_stage_hallway_1786745924609.jpg';
+import oldStageBedroom from '../assets/images/old_stage_bedroom_1786745937142.jpg';
 
 export const INITIAL_PROPERTIES: Property[] = [
   {
@@ -712,6 +716,71 @@ export const INITIAL_PROPERTIES: Property[] = [
       { id: "fp-121", name: "Ashford (1 Bed / 1 Bath)", beds: 1, baths: 1, sqft: 767, price: 1406, availability: "3 Available", deposit: 400 },
       { id: "fp-122", name: "Dunwoody (2 Bed / 2 Bath)", beds: 2, baths: 2, sqft: 1050, price: 1790, availability: "2 Available", deposit: 450 },
       { id: "fp-123", name: "Gables (3 Bed / 2 Bath)", beds: 3, baths: 2, sqft: 1313, price: 2137, availability: "1 Available", deposit: 500 }
+    ]
+  },
+  {
+    id: 13,
+    name: "319 Old Stage Rd Single-Family Home",
+    address: "319 Old Stage Rd, Surgoinsville, TN 37873",
+    city: "Surgoinsville",
+    state: "TN",
+    zip: "37873",
+    price: "$400 – $700",
+    priceMin: 400,
+    priceMax: 700,
+    beds: "2–3",
+    bedsMin: 2,
+    bedsMax: 3,
+    baths: "1–2",
+    bathsCount: 1.5,
+    sqft: "1,120–1,580",
+    sqftMin: 1120,
+    sqftMax: 1580,
+    image: oldStageFront,
+    images: [
+      oldStageFront,
+      oldStageSunflower,
+      oldStageHallway,
+      oldStageBedroom
+    ],
+    badges: ["House for Rent", "Verified", "Rent Special"],
+    pet: true,
+    petDetails: "Pet friendly single family home! Large private yard with plenty of running room for pets. $200 deposit.",
+    managed: "Private Owner / Landlord",
+    propertyType: "House",
+    description: "Welcome to 319 Old Stage Rd in scenic Surgoinsville, TN! Charming single-family rental house featuring a spacious private lawn, covered porch, open-concept living space, updated kitchen, in-unit washer/dryer hookups, and dedicated driveway parking. Conveniently priced between $400 to $700 per month.",
+    amenities: [
+      "Private Yard & Lawn",
+      "Covered Front Porch",
+      "Central Air Conditioning & Heat",
+      "In-Unit Washer & Dryer Hookups",
+      "Private Driveway & Covered Parking",
+      "Updated Kitchen with Stove & Refrigerator",
+      "Hardwood-style Flooring",
+      "Walk-in Closets",
+      "Pet Friendly"
+    ],
+    communityFeatures: [
+      "Scenic Surgoinsville Countryside Views",
+      "Quiet Residential Street",
+      "Quick Access to Hwy 11W",
+      "Large Lot with Mature Trees",
+      "Direct Owner Management"
+    ],
+    lat: 36.4745,
+    lng: -82.8557,
+    rating: 4.9,
+    reviewCount: 18,
+    yearBuilt: 2018,
+    availableDate: "Immediately Available",
+    walkScore: 45,
+    transitScore: 28,
+    deposit: "$350 - $400",
+    parkingFee: "Free Private Driveway Parking Included",
+    sourceUrl: "https://www.zillow.com/homedetails/319-Old-Stage-Rd-Surgoinsville-TN-37873/41535001_zpid/?utm_source=nativeshare_activation_v1",
+    floorPlans: [
+      { id: "fp-131", name: "2 Bed Country Home", beds: 2, baths: 1, sqft: 1120, price: 400, availability: "Available Now", deposit: 350 },
+      { id: "fp-132", name: "3 Bed Family House", beds: 3, baths: 2, sqft: 1580, price: 700, availability: "Move-in Ready", deposit: 400 }
     ]
   }
 ];

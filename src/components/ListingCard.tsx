@@ -104,38 +104,63 @@ export const ListingCard: React.FC<ListingCardProps> = ({
         </div>
 
         {/* Price overlay on image bottom-left */}
-        <div className="absolute bottom-3 left-3 text-white font-bold text-lg leading-none drop-shadow-sm flex items-baseline gap-1">
+        <div className="absolute bottom-3 left-3 text-white font-bold text-lg leading-none drop-shadow-sm flex items-baseline gap-1 z-10">
           <span>{property.price}</span>
           <span className="text-xs font-normal text-slate-200">/mo</span>
         </div>
 
-        {/* Image carousel arrows if multiple images */}
+        {/* Image carousel arrows & slide indicators */}
         {images.length > 1 && (
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={handlePrevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer"
-              aria-label="Previous photo"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handleNextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer"
-              aria-label="Next photo"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-            <div className="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full backdrop-blur-xs">
-              {activeImageIndex + 1}/{images.length}
+          <>
+            {/* Slide Arrows */}
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                type="button"
+                onClick={handlePrevImage}
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer z-10"
+                aria-label="Previous photo"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleNextImage}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer z-10"
+                aria-label="Next photo"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              <div className="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full backdrop-blur-xs z-10">
+                {activeImageIndex + 1}/{images.length}
+              </div>
             </div>
-          </div>
+
+            {/* Slide Dots Indicator */}
+            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-full">
+              {images.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveImageIndex(dotIdx);
+                  }}
+                  className={`transition-all rounded-full cursor-pointer ${
+                    activeImageIndex === dotIdx
+                      ? 'w-4 h-1.5 bg-white'
+                      : 'w-1.5 h-1.5 bg-white/50 hover:bg-white/80'
+                  }`}
+                  aria-label={`Go to slide ${dotIdx + 1}`}
+                />
+              ))}
+            </div>
+          </>
         )}
 
         {/* Quick View trigger button */}
         <button
           onClick={() => onViewDetails(property)}
-          className="absolute bottom-3 right-14 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white text-slate-900 text-xs font-semibold px-2.5 py-1 rounded-md flex items-center gap-1 shadow-sm backdrop-blur-xs cursor-pointer"
+          className="absolute bottom-3 right-14 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white text-slate-900 text-xs font-semibold px-2.5 py-1 rounded-md flex items-center gap-1 shadow-sm backdrop-blur-xs cursor-pointer z-10"
         >
           <Eye className="w-3.5 h-3.5" />
           <span>Quick View</span>
@@ -188,16 +213,15 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
         {/* Buttons / Actions */}
         <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
-          <a
+          <button
+            type="button"
             id={`contact-property-btn-${property.id}`}
-            href="https://www.facebook.com/share/199hpDXEHZ/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 border border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold py-2 px-3 rounded-md transition text-center text-xs shadow-2xs hover:shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+            onClick={() => onContact(property)}
+            className="flex-1 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold py-2 px-3 rounded-md transition text-center text-xs shadow-2xs hover:shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
           >
             <Calendar className="w-3.5 h-3.5" />
-            <span>Contact</span>
-          </a>
+            <span>Apply ($75 Fee)</span>
+          </button>
 
           <button
             type="button"
