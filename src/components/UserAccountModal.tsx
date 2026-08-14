@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Property, UserInquiryRecord, UserProfile, SocialPlatform } from '../types';
 import { logOutProfile, fetchUserInquiries, saveActiveProfile, getSavedProfilesList, switchProfile } from '../services/authService';
+import { AvatarUploader } from './AvatarUploader';
 import {
   X,
   User,
@@ -16,7 +17,9 @@ import {
   Edit3,
   Plus,
   Users,
-  Building
+  Building,
+  Camera,
+  Upload
 } from 'lucide-react';
 
 interface UserAccountModalProps {
@@ -47,6 +50,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
   const [editName, setEditName] = useState('');
   const [editLocation, setEditLocation] = useState('');
   const [editBio, setEditBio] = useState('');
+  const [editAvatar, setEditAvatar] = useState('');
   const [savedProfiles, setSavedProfiles] = useState<UserProfile[]>([]);
 
   useEffect(() => {
@@ -54,6 +58,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
       setEditName(profile.displayName);
       setEditLocation(profile.location || '');
       setEditBio(profile.bio || '');
+      setEditAvatar(profile.avatarUrl);
       setSavedProfiles(getSavedProfilesList());
 
       setLoadingInquiries(true);
@@ -61,7 +66,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
         .then((data) => setInquiries(data))
         .finally(() => setLoadingInquiries(false));
     }
-  }, [isOpen, profile?.id]);
+  }, [isOpen, profile?.id, profile?.avatarUrl]);
 
   if (!isOpen || !profile) return null;
 
@@ -71,7 +76,8 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
       ...profile,
       displayName: editName.trim() || profile.displayName,
       location: editLocation.trim() || profile.location,
-      bio: editBio.trim() || profile.bio
+      bio: editBio.trim() || profile.bio,
+      avatarUrl: editAvatar || profile.avatarUrl
     };
     await saveActiveProfile(updated);
     setIsEditing(false);
@@ -121,11 +127,22 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img
-                src={profile.avatarUrl}
-                alt={profile.displayName}
-                className="w-16 h-16 rounded-full border-2 border-red-500 object-cover shadow-md shrink-0"
-              />
+              <div className="relative group">
+                <img
+                  src={profile.avatarUrl}
+                  alt={profile.displayName}
+                  className="w-16 h-16 rounded-full border-2 border-red-500 object-cover shadow-md shrink-0"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  title="Change Profile Picture"
+                  id="account-header-avatar-edit-btn"
+                  className="absolute -bottom-1 -right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow-md border-2 border-slate-900 transition cursor-pointer"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -151,6 +168,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
             <button
               type="button"
               onClick={() => setIsEditing(!isEditing)}
+              id="account-toggle-edit-btn"
               className="self-start sm:self-center px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs font-semibold text-slate-200 transition cursor-pointer flex items-center gap-1.5"
             >
               <Edit3 className="w-3.5 h-3.5" />
@@ -232,8 +250,17 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
         <div className="p-6 overflow-y-auto flex-1 text-sm space-y-4">
           {/* EDIT FORM MODE */}
           {isEditing && (
-            <div className="p-4 bg-red-50/50 rounded-xl border border-red-200 space-y-3">
+            <div className="p-4 bg-red-50/50 rounded-xl border border-red-200 space-y-4">
               <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Edit Social Profile Info</h4>
+
+              {/* Upload Profile Picture Section */}
+              <AvatarUploader
+                currentAvatar={editAvatar || profile.avatarUrl}
+                onAvatarChange={(newUrl) => setEditAvatar(newUrl)}
+                defaultAvatarSeed={profile.avatarUrl}
+                idPrefix="account-edit"
+              />
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">Display Name</label>
@@ -274,7 +301,8 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                 <button
                   type="button"
                   onClick={handleSaveEdit}
-                  className="px-4 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold"
+                  id="account-save-profile-btn"
+                  className="px-4 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold cursor-pointer shadow-xs"
                 >
                   Save Changes
                 </button>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Sparkles, CheckCircle2, User, Globe, MapPin, Plus, ShieldCheck, ArrowRight, Share2, Layers } from 'lucide-react';
+import { X, Sparkles, CheckCircle2, User, Globe, MapPin, Plus, ShieldCheck, ArrowRight, Share2, Layers, Upload } from 'lucide-react';
 import { SocialPlatform, SocialLink, UserProfile } from '../types';
 import { createSocialProfile, formatSocialUrl } from '../services/authService';
+import { AvatarUploader } from './AvatarUploader';
 
 interface SocialProfileModalProps {
   isOpen: boolean;
@@ -340,6 +341,16 @@ export const SocialProfileModal: React.FC<SocialProfileModalProps> = ({
                 />
               </div>
             </div>
+          </div>
+
+          {/* Step 4: Profile Picture Custom Upload or Presets */}
+          <div className="pt-1">
+            <AvatarUploader
+              currentAvatar={effectiveAvatar}
+              onAvatarChange={(newUrl) => setAvatarUrl(newUrl)}
+              defaultAvatarSeed={currentPlatformConfig.avatarSeed}
+              idPrefix="social-modal"
+            />
           </div>
 
           {/* Live Preview Card */}
