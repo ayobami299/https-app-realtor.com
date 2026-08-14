@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { User as FirebaseUser } from 'firebase/auth';
-import { Property, FilterState, InquiryFormData, AdviceArticle } from './types';
+import { Property, FilterState, InquiryFormData, UserProfile } from './types';
 import { INITIAL_PROPERTIES, POPULAR_CITIES, ADVICE_ARTICLES } from './data/listingsData';
 import { Header } from './components/Header';
 import { HeroSearch } from './components/HeroSearch';
@@ -15,13 +14,13 @@ import { FavoritesDrawer } from './components/FavoritesDrawer';
 import { RentCalculatorModal } from './components/RentCalculatorModal';
 import { AdviceSection } from './components/AdviceSection';
 import { Footer } from './components/Footer';
-import { AuthModal } from './components/AuthModal';
+import { SocialProfileModal } from './components/SocialProfileModal';
 import { UserAccountModal } from './components/UserAccountModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
-import { SearchX, Sparkles, Building, CheckCircle, RefreshCw } from 'lucide-react';
+import { SearchX, RefreshCw } from 'lucide-react';
 import {
-  subscribeToAuth,
-  logOut,
+  subscribeToProfile,
+  logOutProfile,
   fetchUserFavorites,
   addFavoriteToFirestore,
   removeFavoriteFromFirestore,
@@ -33,7 +32,7 @@ export default function App() {
   const [properties] = useState<Property[]>(INITIAL_PROPERTIES);
   const [activeNav, setActiveNav] = useState<string>('Rent');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [activeProfile, setActiveProfile] = useState<UserProfile | null>(null);
 
   const [filters, setFilters] = useState<FilterState>({
     searchTerm: '',
@@ -54,10 +53,6 @@ export default function App() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          if (parsed.length === 2 && parsed.includes(1) && parsed.includes(4)) {
-            localStorage.removeItem('renthub_saved_ids');
-            return [];
-          }
           return parsed;
         }
       }
@@ -75,10 +70,7 @@ export default function App() {
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [isUserAccountOpen, setIsUserAccountOpen] = useState(false);
-  const [authModal, setAuthModal] = useState<{ isOpen: boolean; mode: 'login' | 'signup' | 'manage' }>({
-    isOpen: false,
-    mode: 'login'
-  });
+  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
 
   // Toast notifications
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -95,23 +87,23 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Auth State Listener & Firestore Favorites Synchronization
+  // Social Profile Listener & Firestore Favorites Synchronization
   useEffect(() => {
-    const unsubscribe = subscribeToAuth(async (user) => {
-      setCurrentUser(user);
-      if (user) {
+    const unsubscribe = subscribeToProfile(async (profile) => {
+      setActiveProfile(profile);
+      if (profile?.id) {
         try {
-          const remoteFavorites = await fetchUserFavorites(user.uid);
+          const remoteFavorites = await fetchUserFavorites(profile.id);
           if (remoteFavorites.length > 0) {
             setSavedPropertyIds(remoteFavorites);
             localStorage.setItem('renthub_saved_ids', JSON.stringify(remoteFavorites));
           } else {
-            // Push any local favorites into user's firestore on initial sync
+            // Push any local favorites into user's profile on initial sync
             const currentLocal = savedPropertyIds;
             for (const propId of currentLocal) {
               const p = properties.find((item) => item.id === propId);
               if (p) {
-                await addFavoriteToFirestore(user.uid, {
+                await addFavoriteToFirestore(profile.id, {
                   id: p.id,
                   name: p.name,
                   price: p.price,
@@ -122,13 +114,13 @@ export default function App() {
             }
           }
         } catch (err) {
-          console.error('Error synchronizing user favorites:', err);
+          console.warn('Error synchronizing user profile favorites:', err);
         }
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [properties]);
 
   // Toggle favorite with Firestore + localStorage persistence
   const handleToggleSave = async (property: Property) => {
@@ -138,14 +130,14 @@ export default function App() {
     if (exists) {
       updated = savedPropertyIds.filter((id) => id !== property.id);
       addToast('info', 'Removed from Saved', `${property.name} removed from your saved list.`);
-      if (currentUser) {
-        await removeFavoriteFromFirestore(currentUser.uid, property.id);
+      if (activeProfile?.id) {
+        await removeFavoriteFromFirestore(activeProfile.id, property.id);
       }
     } else {
       updated = [...savedPropertyIds, property.id];
       addToast('success', 'Property Saved!', `${property.name} added to your saved favorites.`);
-      if (currentUser) {
-        await addFavoriteToFirestore(currentUser.uid, {
+      if (activeProfile?.id) {
+        await addFavoriteToFirestore(activeProfile.id, {
           id: property.id,
           name: property.name,
           price: property.price,
@@ -164,7 +156,7 @@ export default function App() {
   // Filter properties
   const filteredProperties = useMemo(() => {
     return properties.filter((item) => {
-      // Search term (name, address, city, state, zip, managed)
+      // Search term
       if (filters.searchTerm.trim()) {
         const q = filters.searchTerm.toLowerCase().trim();
         const matchesQuery =
@@ -275,11 +267,10 @@ export default function App() {
   };
 
   const handleContactSubmit = async (data: InquiryFormData, property: Property) => {
-    if (currentUser) {
+    if (activeProfile?.id) {
       await recordInquiryInFirestore({
         ...data,
-        userId: currentUser.uid,
-        propertyId: property.id,
+        userId: activeProfile.id,
         propertyName: property.name,
         createdAt: new Date().toISOString(),
         status: 'pending'
@@ -289,24 +280,25 @@ export default function App() {
     addToast(
       'success',
       'Inquiry Sent!',
-      `Thank you ${data.fullName || 'renter'}! Your ${
+      `Thank you ${data.fullName || activeProfile?.displayName || 'renter'}! Your ${
         data.inquiryType === 'tour' ? 'tour request' : 'inquiry'
-      } for ${property.name} has been recorded in your account & sent to ${property.managed}.`
+      } for ${property.name} has been sent to ${property.managed}.`
     );
   };
 
-  const handleAuthSuccess = (email: string, mode: string) => {
+  const handleProfileCreated = (profile: UserProfile) => {
+    setActiveProfile(profile);
     addToast(
       'success',
-      mode === 'login' ? 'Signed In' : mode === 'signup' ? 'Account Created' : 'Welcome!',
-      `Welcome to RentHub! Logged in as ${email}.`
+      'Social Profile Connected!',
+      `Welcome ${profile.displayName}! Your ${profile.primarySocial.toUpperCase()} handle ${profile.handle} is now connected.`
     );
   };
 
-  const handleLogout = async () => {
-    await logOut();
-    setCurrentUser(null);
-    addToast('info', 'Signed Out', 'You have been signed out of your account.');
+  const handleLogout = () => {
+    logOutProfile();
+    setActiveProfile(null);
+    addToast('info', 'Profile Disconnected', 'Your social profile has been disconnected.');
   };
 
   return (
@@ -321,9 +313,9 @@ export default function App() {
         savedCount={savedPropertyIds.length}
         onOpenSaved={() => setIsFavoritesOpen(true)}
         onOpenCalculator={() => setIsCalculatorOpen(true)}
-        onOpenAuth={(mode) => setAuthModal({ isOpen: true, mode })}
-        onOpenManageRentals={() => setAuthModal({ isOpen: true, mode: 'manage' })}
-        user={currentUser}
+        onOpenSocialModal={() => setIsSocialModalOpen(true)}
+        onOpenManageRentals={() => setIsSocialModalOpen(true)}
+        profile={activeProfile}
         onOpenUserAccount={() => setIsUserAccountOpen(true)}
         onLogout={handleLogout}
       />
@@ -472,6 +464,7 @@ export default function App() {
         onClose={() => setSelectedPropertyForContact(null)}
         onSubmitInquiry={handleContactSubmit}
         initialType={contactModalType}
+        profile={activeProfile}
       />
 
       <MoreFiltersModal
@@ -492,9 +485,9 @@ export default function App() {
           if (prop) handleToggleSave(prop);
         }}
         onClearAll={async () => {
-          if (currentUser) {
+          if (activeProfile?.id) {
             for (const propId of savedPropertyIds) {
-              await removeFavoriteFromFirestore(currentUser.uid, propId);
+              await removeFavoriteFromFirestore(activeProfile.id, propId);
             }
           }
           setSavedPropertyIds([]);
@@ -523,17 +516,18 @@ export default function App() {
         }}
       />
 
-      <AuthModal
-        isOpen={authModal.isOpen}
-        onClose={() => setAuthModal({ ...authModal, isOpen: false })}
-        initialMode={authModal.mode}
-        onSuccess={handleAuthSuccess}
+      {/* Social Media Profile Creation Modal */}
+      <SocialProfileModal
+        isOpen={isSocialModalOpen}
+        onClose={() => setIsSocialModalOpen(false)}
+        onProfileCreated={handleProfileCreated}
       />
 
+      {/* User Account / Profile Details Modal */}
       <UserAccountModal
         isOpen={isUserAccountOpen}
         onClose={() => setIsUserAccountOpen(false)}
-        user={currentUser}
+        profile={activeProfile}
         savedProperties={savedPropertiesList}
         onSelectProperty={(prop) => setSelectedPropertyForDetails(prop)}
         onRemoveFavorite={async (id) => {
@@ -541,10 +535,7 @@ export default function App() {
           if (prop) handleToggleSave(prop);
         }}
         onLogout={handleLogout}
-        onOpenSavedDrawer={() => {
-          setIsUserAccountOpen(false);
-          setIsFavoritesOpen(true);
-        }}
+        onOpenCreateProfile={() => setIsSocialModalOpen(true)}
       />
     </div>
   );

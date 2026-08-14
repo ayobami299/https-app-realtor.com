@@ -95,19 +95,33 @@ export interface InquiryFormData {
   preferredBeds?: string;
 }
 
-export interface AuthUserProfile {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL?: string | null;
-  role?: 'renter' | 'landlord';
+export type SocialPlatform = 'instagram' | 'x' | 'linkedin' | 'facebook' | 'tiktok' | 'github' | 'youtube';
+
+export interface SocialLink {
+  platform: SocialPlatform;
+  handle: string;
+  url?: string;
+  verified?: boolean;
+}
+
+export interface UserProfile {
+  id: string;
+  displayName: string;
+  handle: string;
+  avatarUrl: string;
+  email?: string;
   phone?: string;
+  bio?: string;
+  role: 'renter' | 'buyer' | 'landlord' | 'agent';
+  primarySocial: SocialPlatform;
+  socialLinks: SocialLink[];
+  location?: string;
+  createdAt: string;
 }
 
 export interface UserInquiryRecord extends InquiryFormData {
   id?: string;
   userId: string;
-  propertyId: number;
   propertyName: string;
   createdAt: string;
   status: 'pending' | 'confirmed' | 'completed';

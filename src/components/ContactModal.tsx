@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Property, InquiryFormData } from '../types';
-import { X, Calendar, Send, CheckCircle2, Phone, Mail, Clock, ShieldCheck } from 'lucide-react';
+import { Property, InquiryFormData, UserProfile } from '../types';
+import { X, Calendar, Send, CheckCircle2, Phone, Mail, Clock, ShieldCheck, UserCheck } from 'lucide-react';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -8,6 +8,7 @@ interface ContactModalProps {
   property: Property | null;
   onSubmitInquiry: (data: InquiryFormData, property: Property) => void;
   initialType?: 'general' | 'tour' | 'pricing' | 'application';
+  profile?: UserProfile | null;
 }
 
 export const ContactModal: React.FC<ContactModalProps> = ({
@@ -15,7 +16,8 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   onClose,
   property,
   onSubmitInquiry,
-  initialType = 'general'
+  initialType = 'general',
+  profile
 }) => {
   const [formData, setFormData] = useState<InquiryFormData>({
     fullName: '',
@@ -33,10 +35,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
   useEffect(() => {
     if (initialType) {
-      setFormData((prev) => ({ ...prev, inquiryType: initialType }));
+      setFormData((prev) => ({
+        ...prev,
+        inquiryType: initialType,
+        fullName: profile?.displayName || prev.fullName,
+        email: profile?.email || prev.email,
+        phone: profile?.phone || prev.phone
+      }));
     }
     setSubmitted(false);
-  }, [initialType, property, isOpen]);
+  }, [initialType, property, isOpen, profile]);
 
   if (!isOpen || !property) return null;
 
@@ -71,7 +79,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             <img
               src={property.image}
               alt={property.name}
-              className="w-14 h-14 rounded-lg object-cover border border-slate-700 shadow-sm shrink-0"
+              className="w-14 h-14 rounded-lg object-cover border border-slate-700 shadow-xs shrink-0"
             />
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
@@ -90,11 +98,21 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             </div>
             <h4 className="text-lg font-bold text-slate-900">Inquiry Sent Successfully!</h4>
             <p className="text-sm text-slate-600 max-w-sm mx-auto">
-              The leasing office at <span className="font-semibold text-slate-900">{property.name}</span> will contact you via email & SMS shortly.
+              The leasing office at <span className="font-semibold text-slate-900">{property.name}</span> will contact you shortly.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-4 text-sm">
+            {profile && (
+              <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between text-xs text-emerald-800">
+                <div className="flex items-center gap-2">
+                  <img src={profile.avatarUrl} alt="" className="w-6 h-6 rounded-full object-cover border border-emerald-400" />
+                  <span className="font-semibold">Submitting with verified profile: <strong>{profile.handle}</strong> ({profile.primarySocial})</span>
+                </div>
+                <UserCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              </div>
+            )}
+
             {/* Inquiry Type Tabs */}
             <div className="flex bg-slate-100 p-1 rounded-md text-xs font-semibold border border-slate-200">
               <button
