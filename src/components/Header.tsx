@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Calculator, Menu, X, Building2, User, Sparkles, LogOut, ChevronDown, Share2, ShieldCheck, Users } from 'lucide-react';
+import { Heart, Calculator, Menu, X, Building2, User, Sparkles, LogOut, ChevronDown, Share2, ShieldCheck, Users, MessageSquare } from 'lucide-react';
 import { UserProfile } from '../types';
 
 interface HeaderProps {
@@ -103,6 +103,18 @@ export const Header: React.FC<HeaderProps> = ({
             <Building2 className="w-4 h-4 text-slate-400" />
             <span>Manage rentals</span>
           </button>
+
+          <a
+            href="https://www.facebook.com/share/199hpDXEHZ/"
+            target="_blank"
+            rel="noopener noreferrer"
+            id="header-contact-btn"
+            className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-red-600 transition cursor-pointer"
+            title="Contact Us on Facebook"
+          >
+            <MessageSquare className="w-4 h-4 text-slate-400" />
+            <span className="hidden sm:inline">Contact</span>
+          </a>
 
           <button
             onClick={onOpenSaved}
@@ -309,6 +321,17 @@ export const Header: React.FC<HeaderProps> = ({
               <Building2 className="w-4 h-4 text-slate-500" />
               Manage & Advertise Rentals
             </button>
+
+            <a
+              href="https://www.facebook.com/share/199hpDXEHZ/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-600"
+            >
+              <MessageSquare className="w-4 h-4 text-slate-500" />
+              Contact Us on Facebook
+            </a>
 
             {profile ? (
               <button

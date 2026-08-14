@@ -123,6 +123,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCalculator, onSelectCity }
         <div>
           <h5 className="text-white font-bold text-xs mb-3 uppercase tracking-wider">Company</h5>
           <ul className="space-y-2 text-xs text-slate-400">
+            <li><a href="https://www.facebook.com/share/199hpDXEHZ/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition flex items-center gap-1"><span>Contact Us</span></a></li>
             <li><a href="#" className="hover:text-white transition">About Us</a></li>
             <li><a href="#" className="hover:text-white transition">Careers</a></li>
             <li><a href="#" className="hover:text-white transition">Advertise with RentHub</a></li>

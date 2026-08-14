@@ -257,7 +257,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
               <button
                 type="submit"
                 id="submit-contact-btn"
@@ -266,7 +266,19 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 <Send className="w-4 h-4" />
                 <span>Send Message to Property</span>
               </button>
-              <div className="flex items-center justify-center gap-1 text-[11px] text-slate-400 mt-2">
+
+              <a
+                href="https://www.facebook.com/share/199hpDXEHZ/"
+                target="_blank"
+                rel="noopener noreferrer"
+                id="modal-direct-facebook-contact-btn"
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2 rounded-md transition text-center text-xs flex items-center justify-center gap-2 cursor-pointer border border-slate-200"
+              >
+                <span>Direct Contact on Facebook</span>
+                <span className="text-[10px] bg-blue-600 text-white font-bold px-1.5 py-0.2 rounded">Instant Chat</span>
+              </a>
+
+              <div className="flex items-center justify-center gap-1 text-[11px] text-slate-400 pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Your information is encrypted and securely sent to verified leasing staff.</span>
               </div>

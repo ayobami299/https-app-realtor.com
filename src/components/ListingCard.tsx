@@ -188,15 +188,16 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
         {/* Buttons / Actions */}
         <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
-          <button
-            type="button"
+          <a
             id={`contact-property-btn-${property.id}`}
-            onClick={() => onContact(property)}
+            href="https://www.facebook.com/share/199hpDXEHZ/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-1 border border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold py-2 px-3 rounded-md transition text-center text-xs shadow-2xs hover:shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
           >
             <Calendar className="w-3.5 h-3.5" />
             <span>Contact</span>
-          </button>
+          </a>
 
           <button
             type="button"
