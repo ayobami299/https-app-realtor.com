@@ -6,7 +6,7 @@ interface ListingCardProps {
   property: Property;
   isSaved: boolean;
   onToggleSave: (property: Property) => void;
-  onContact: (property: Property) => void;
+  onContact: (property: Property, type?: 'general' | 'tour' | 'pricing' | 'application') => void;
   onViewDetails: (property: Property) => void;
   viewMode?: 'grid' | 'list';
 }
@@ -216,7 +216,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
           <button
             type="button"
             id={`contact-property-btn-${property.id}`}
-            onClick={() => onContact(property)}
+            onClick={() => onContact(property, 'application')}
             className="flex-1 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold py-2 px-3 rounded-md transition text-center text-xs shadow-2xs hover:shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
           >
             <Calendar className="w-3.5 h-3.5" />

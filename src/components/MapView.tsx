@@ -194,16 +194,15 @@ export const MapView: React.FC<MapViewProps> = ({
               </div>
 
               <div className="space-y-2 pt-2">
-                <a
-                  href="https://www.facebook.com/share/199hpDXEHZ/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => onContactProperty(selectedProperty)}
                   id={`map-contact-btn-${selectedProperty.id}`}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-4 rounded-md transition text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  className="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold py-2.5 px-4 rounded-md transition text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   <Calendar className="w-3.5 h-3.5" />
-                  <span>Contact / Schedule Tour</span>
-                </a>
+                  <span>Apply ($75 Fee) & Contact</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => onSelectProperty(selectedProperty)}

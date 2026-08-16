@@ -473,15 +473,14 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
               <span>Schedule Tour</span>
             </button>
 
-            <a
-              href="https://www.facebook.com/share/199hpDXEHZ/"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => onContact(property, 'application')}
               id="details-contact-property-btn"
               className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold px-5 py-2 rounded-md transition text-xs sm:text-sm flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <span>Contact Property</span>
-            </a>
+              <span>Apply ($75 Fee) & Contact</span>
+            </button>
           </div>
         </div>
       </div>

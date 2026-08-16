@@ -3,6 +3,10 @@ import oldStageFront from '../assets/images/old_stage_front_1786745901385.jpg';
 import oldStageSunflower from '../assets/images/old_stage_sunflower_1786745912487.jpg';
 import oldStageHallway from '../assets/images/old_stage_hallway_1786745924609.jpg';
 import oldStageBedroom from '../assets/images/old_stage_bedroom_1786745937142.jpg';
+import lombardKitchenActual from '../assets/images/lombard_kitchen_actual_1786916314291.jpg';
+import lombardHallwayActual from '../assets/images/lombard_hallway_actual_1786916326179.jpg';
+import lombardBed1Actual from '../assets/images/lombard_bed1_actual_1786916336719.jpg';
+import lombardBed2Actual from '../assets/images/lombard_bed2_actual_1786916346741.jpg';
 
 export const INITIAL_PROPERTIES: Property[] = [
   {
@@ -781,6 +785,71 @@ export const INITIAL_PROPERTIES: Property[] = [
     floorPlans: [
       { id: "fp-131", name: "2 Bed Country Home", beds: 2, baths: 1, sqft: 1120, price: 400, availability: "Available Now", deposit: 350 },
       { id: "fp-132", name: "3 Bed Family House", beds: 3, baths: 2, sqft: 1580, price: 700, availability: "Move-in Ready", deposit: 400 }
+    ]
+  },
+  {
+    id: 14,
+    name: "302 N Lombard St Historic Townhome",
+    address: "302 N Lombard St, Wilmington, DE 19801",
+    city: "Wilmington",
+    state: "DE",
+    zip: "19801",
+    price: "$700 – $900",
+    priceMin: 700,
+    priceMax: 900,
+    beds: "2–3",
+    bedsMin: 2,
+    bedsMax: 3,
+    baths: "1–2",
+    bathsCount: 1.5,
+    sqft: "1,050–1,420",
+    sqftMin: 1050,
+    sqftMax: 1420,
+    image: lombardKitchenActual,
+    images: [
+      lombardKitchenActual,
+      lombardBed1Actual,
+      lombardBed2Actual,
+      lombardHallwayActual
+    ],
+    badges: ["House for Rent", "Verified", "Rent Special"],
+    pet: true,
+    petDetails: "Pet friendly! Cats and small/medium dogs welcomed with $200 pet deposit and $25/mo pet rent.",
+    managed: "Private Owner / Landlord",
+    propertyType: "House",
+    description: "Welcome to 302 N Lombard St in downtown Wilmington, DE! Beautifully updated historic brick townhouse featuring modern kitchen with stainless steel appliances, gleaming hardwood flooring, open-concept living area, in-unit washer/dryer hookups, and spacious bedrooms. Conveniently priced between $700 to $900 per month with rapid access to Wilmington Riverfront and transit.",
+    amenities: [
+      "Updated Modern Kitchen",
+      "Stainless Steel Appliances",
+      "Gleaming Hardwood Flooring",
+      "Central Air Conditioning & Heat",
+      "In-Unit Washer & Dryer Hookups",
+      "Spacious Master Bedroom Suite",
+      "Private Backyard Patio Area",
+      "High-Speed Internet Ready",
+      "Pet Friendly"
+    ],
+    communityFeatures: [
+      "Walkable Downtown Wilmington Historic District",
+      "Steps to Market St Dining & Wilmington Riverfront",
+      "Close to Wilmington Amtrak & SEPTA Train Station",
+      "Quick Access to I-95 & Route 13",
+      "Dedicated Landlord Management"
+    ],
+    lat: 39.7397,
+    lng: -75.5458,
+    rating: 4.8,
+    reviewCount: 15,
+    yearBuilt: 2019,
+    availableDate: "Immediately Available",
+    walkScore: 82,
+    transitScore: 68,
+    deposit: "$500 - $600",
+    parkingFee: "Street Parking & Nearby Permit Lots Available",
+    sourceUrl: "https://www.zillow.com/homedetails/302-N-Lombard-St-Wilmington-DE-19801/72966348_zpid/?utm_medium=referral",
+    floorPlans: [
+      { id: "fp-141", name: "2 Bed Brick Townhome", beds: 2, baths: 1, sqft: 1050, price: 700, availability: "Available Now", deposit: 500 },
+      { id: "fp-142", name: "3 Bed Deluxe Townhouse", beds: 3, baths: 2, sqft: 1420, price: 900, availability: "Move-in Ready", deposit: 600 }
     ]
   }
 ];

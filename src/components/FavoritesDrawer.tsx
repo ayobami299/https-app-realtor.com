@@ -117,14 +117,16 @@ export const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({
                   <p className="text-[10px] text-slate-400 mt-0.5">{property.beds} bed · {property.baths} bath · {property.sqft} sq ft</p>
 
                   <div className="mt-2 flex items-center gap-2">
-                    <a
-                      href="https://www.facebook.com/share/199hpDXEHZ/"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onContactProperty(property);
+                        onClose();
+                      }}
                       className="text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1 border border-red-200/60"
                     >
-                      <Calendar className="w-3 h-3" /> Contact
-                    </a>
+                      <Calendar className="w-3 h-3" /> Apply ($75 Fee)
+                    </button>
                     <button
                       onClick={() => {
                         onSelectProperty(property);

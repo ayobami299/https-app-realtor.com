@@ -9,6 +9,7 @@ import { ListingCard } from './components/ListingCard';
 import { MapView } from './components/MapView';
 import { PropertyDetailsModal } from './components/PropertyDetailsModal';
 import { ContactModal } from './components/ContactModal';
+import { ApplicationFeeModal } from './components/ApplicationFeeModal';
 import { MoreFiltersModal } from './components/MoreFiltersModal';
 import { FavoritesDrawer } from './components/FavoritesDrawer';
 import { RentCalculatorModal } from './components/RentCalculatorModal';
@@ -65,6 +66,7 @@ export default function App() {
   // Modal controls
   const [selectedPropertyForDetails, setSelectedPropertyForDetails] = useState<Property | null>(null);
   const [selectedPropertyForContact, setSelectedPropertyForContact] = useState<Property | null>(null);
+  const [selectedPropertyForFee, setSelectedPropertyForFee] = useState<Property | null>(null);
   const [contactModalType, setContactModalType] = useState<'general' | 'tour' | 'pricing' | 'application'>('general');
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
@@ -395,8 +397,7 @@ export default function App() {
               properties={filteredProperties}
               onSelectProperty={(prop) => setSelectedPropertyForDetails(prop)}
               onContactProperty={(prop) => {
-                setSelectedPropertyForContact(prop);
-                setContactModalType('tour');
+                setSelectedPropertyForFee(prop);
               }}
               savedIds={savedPropertyIds}
               onToggleSave={handleToggleSave}
@@ -417,9 +418,13 @@ export default function App() {
                   property={property}
                   isSaved={savedPropertyIds.includes(property.id)}
                   onToggleSave={handleToggleSave}
-                  onContact={(prop) => {
-                    setSelectedPropertyForContact(prop);
-                    setContactModalType('general');
+                  onContact={(prop, type) => {
+                    if (type === 'application') {
+                      setSelectedPropertyForFee(prop);
+                    } else {
+                      setSelectedPropertyForContact(prop);
+                      setContactModalType(type || 'general');
+                    }
                   }}
                   onViewDetails={(prop) => setSelectedPropertyForDetails(prop)}
                   viewMode={viewMode === 'list' ? 'list' : 'grid'}
@@ -453,8 +458,37 @@ export default function App() {
         onToggleSave={handleToggleSave}
         onContact={(prop, type) => {
           setSelectedPropertyForDetails(null);
-          setSelectedPropertyForContact(prop);
-          setContactModalType(type || 'general');
+          if (type === 'application') {
+            setSelectedPropertyForFee(prop);
+          } else {
+            setSelectedPropertyForContact(prop);
+            setContactModalType(type || 'general');
+          }
+        }}
+      />
+
+      {/* $75 Rental Application Fee Modal */}
+      <ApplicationFeeModal
+        property={selectedPropertyForFee}
+        isOpen={Boolean(selectedPropertyForFee)}
+        onClose={() => setSelectedPropertyForFee(null)}
+        profile={activeProfile}
+        onSuccess={({ txnId, property, applicantName }) => {
+          addToast('success', 'Application Fee Paid ($75.00)', `Receipt #${txnId} authorized for ${property.name}.`);
+          if (activeProfile?.id) {
+            recordInquiryInFirestore({
+              userId: activeProfile.id,
+              propertyName: property.name,
+              fullName: applicantName,
+              email: activeProfile.email || 'Applicant',
+              phone: activeProfile.phone || '',
+              moveInDate: new Date().toISOString().split('T')[0],
+              inquiryType: 'application',
+              message: `Paid $75 application fee (Receipt: ${txnId}) and referred to Facebook listing.`,
+              createdAt: new Date().toISOString(),
+              status: 'confirmed'
+            });
+          }
         }}
       />
 
@@ -462,7 +496,13 @@ export default function App() {
         property={selectedPropertyForContact}
         isOpen={Boolean(selectedPropertyForContact)}
         onClose={() => setSelectedPropertyForContact(null)}
-        onSubmitInquiry={handleContactSubmit}
+        onSubmitInquiry={(data, prop) => {
+          handleContactSubmit(data, prop);
+          if (data.inquiryType === 'application') {
+            setSelectedPropertyForContact(null);
+            setSelectedPropertyForFee(prop);
+          }
+        }}
         initialType={contactModalType}
         profile={activeProfile}
       />
@@ -498,8 +538,7 @@ export default function App() {
         }}
         onSelectProperty={(prop) => setSelectedPropertyForDetails(prop)}
         onContactProperty={(prop) => {
-          setSelectedPropertyForContact(prop);
-          setContactModalType('general');
+          setSelectedPropertyForFee(prop);
         }}
       />
 
