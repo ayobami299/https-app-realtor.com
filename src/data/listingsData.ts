@@ -7,6 +7,14 @@ import lombardKitchenActual from '../assets/images/lombard_kitchen_actual_178691
 import lombardHallwayActual from '../assets/images/lombard_hallway_actual_1786916326179.jpg';
 import lombardBed1Actual from '../assets/images/lombard_bed1_actual_1786916336719.jpg';
 import lombardBed2Actual from '../assets/images/lombard_bed2_actual_1786916346741.jpg';
+import dukeExteriorActual from '../assets/images/duke_exterior_actual_1786995264702.jpg';
+import dukeKitchenActual from '../assets/images/duke_kitchen_actual_1786995280372.jpg';
+import dukeBedroomActual from '../assets/images/duke_bedroom_actual_1786995295887.jpg';
+import dukeBasementActual from '../assets/images/duke_basement_actual_1786995309101.jpg';
+import powderBrickExterior from '../assets/images/powder_brick_exterior_1786995993406.jpg';
+import powderKitchenDark from '../assets/images/powder_kitchen_dark_1786996007042.jpg';
+import powderLivingWindow from '../assets/images/powder_living_window_1786996018052.jpg';
+import powderBasementStairs from '../assets/images/powder_basement_stairs_1786996027703.jpg';
 
 export const INITIAL_PROPERTIES: Property[] = [
   {
@@ -781,7 +789,6 @@ export const INITIAL_PROPERTIES: Property[] = [
     transitScore: 28,
     deposit: "$350 - $400",
     parkingFee: "Free Private Driveway Parking Included",
-    sourceUrl: "https://www.zillow.com/homedetails/319-Old-Stage-Rd-Surgoinsville-TN-37873/41535001_zpid/?utm_source=nativeshare_activation_v1",
     floorPlans: [
       { id: "fp-131", name: "2 Bed Country Home", beds: 2, baths: 1, sqft: 1120, price: 400, availability: "Available Now", deposit: 350 },
       { id: "fp-132", name: "3 Bed Family House", beds: 3, baths: 2, sqft: 1580, price: 700, availability: "Move-in Ready", deposit: 400 }
@@ -846,10 +853,138 @@ export const INITIAL_PROPERTIES: Property[] = [
     transitScore: 68,
     deposit: "$500 - $600",
     parkingFee: "Street Parking & Nearby Permit Lots Available",
-    sourceUrl: "https://www.zillow.com/homedetails/302-N-Lombard-St-Wilmington-DE-19801/72966348_zpid/?utm_medium=referral",
     floorPlans: [
       { id: "fp-141", name: "2 Bed Brick Townhome", beds: 2, baths: 1, sqft: 1050, price: 700, availability: "Available Now", deposit: 500 },
       { id: "fp-142", name: "3 Bed Deluxe Townhouse", beds: 3, baths: 2, sqft: 1420, price: 900, availability: "Move-in Ready", deposit: 600 }
+    ]
+  },
+  {
+    id: 15,
+    name: "1435 S Duke St Charming Home",
+    address: "1435 S Duke St, York, PA 17403",
+    city: "York",
+    state: "PA",
+    zip: "17403",
+    price: "$500 – $700",
+    priceMin: 500,
+    priceMax: 700,
+    beds: "2–3",
+    bedsMin: 2,
+    bedsMax: 3,
+    baths: "1–2",
+    bathsCount: 1.5,
+    sqft: "1,100–1,550",
+    sqftMin: 1100,
+    sqftMax: 1550,
+    image: dukeExteriorActual,
+    images: [
+      dukeExteriorActual,
+      dukeKitchenActual,
+      dukeBedroomActual,
+      dukeBasementActual
+    ],
+    badges: ["House for Rent", "Verified", "Rent Special"],
+    pet: true,
+    petDetails: "Pet friendly! Cats and small dogs welcomed with $200 pet deposit and $25/mo pet rent.",
+    managed: "Private Owner / Landlord",
+    propertyType: "House",
+    description: "Welcome to 1435 S Duke St in York, PA! This elevated single-family home features an attached sunroom with scenic hillside views, step-down access into an updated modern kitchen with white shaker cabinetry and stainless steel appliances, rich polished hardwood flooring, master bedroom with dual sliding-door closets, and an expansive full-length basement with exposed timber rafters. Rent ranges from $500 to $700 per month with rapid access to York College, WellSpan York Hospital, and I-83.",
+    amenities: [
+      "Updated Modern Kitchen with White Shaker Cabinets",
+      "Stainless Steel Refrigerator, Range & Microwave",
+      "Rich Glossy Hardwood & Plank Flooring",
+      "Dual Sliding-Door Closets in Master Bedroom",
+      "Sunroom Addition with Panoramic Hillside Windows",
+      "Expansive Full-Length Finished/Painted Basement",
+      "Central Heating & Air Conditioning",
+      "In-Unit Laundry Connections",
+      "Spacious Elevated Yard",
+      "Pet Friendly"
+    ],
+    communityFeatures: [
+      "Quiet Residential Neighborhood in South York",
+      "Minutes to York College of Pennsylvania & WellSpan York Hospital",
+      "Quick Access to I-83, Leader Heights, & Downtown York",
+      "Close to Local Parks, Dining, and Grocery Shopping",
+      "Dedicated Responsive Property Management"
+    ],
+    lat: 39.9463,
+    lng: -76.7186,
+    rating: 4.8,
+    reviewCount: 12,
+    yearBuilt: 2018,
+    availableDate: "Immediately Available",
+    walkScore: 74,
+    transitScore: 56,
+    deposit: "$400 - $500",
+    parkingFee: "Private Driveway & Street Parking Included",
+    floorPlans: [
+      { id: "fp-151", name: "2 Bed Classic Home", beds: 2, baths: 1, sqft: 1100, price: 500, availability: "Available Now", deposit: 400 },
+      { id: "fp-152", name: "3 Bed Spacious Residence", beds: 3, baths: 2, sqft: 1550, price: 700, availability: "Move-in Ready", deposit: 500 }
+    ]
+  },
+  {
+    id: 16,
+    name: "1862 Powder Mill Rd Residence",
+    address: "1862 Powder Mill Rd, York, PA 17402",
+    city: "York",
+    state: "PA",
+    zip: "17402",
+    price: "$500 – $700",
+    priceMin: 500,
+    priceMax: 700,
+    beds: "2–3",
+    bedsMin: 2,
+    bedsMax: 3,
+    baths: "1–2",
+    bathsCount: 1.5,
+    sqft: "1,150–1,600",
+    sqftMin: 1150,
+    sqftMax: 1600,
+    image: powderBrickExterior,
+    images: [
+      powderBrickExterior,
+      powderKitchenDark,
+      powderLivingWindow,
+      powderBasementStairs
+    ],
+    badges: ["House for Rent", "Verified", "Rent Special"],
+    pet: true,
+    petDetails: "Pet friendly! Cats and dogs allowed with $200 pet deposit and $25/mo pet rent.",
+    managed: "Private Owner / Landlord",
+    propertyType: "House",
+    description: "Welcome to 1862 Powder Mill Rd in York, PA 17402! This classic all-brick ranch home features an attached garage with a lush grassy front yard, a sun-drenched living room with gleaming golden hardwood floors and a large multi-pane picture window, an updated kitchen with dark espresso shaker cabinetry, stainless steel appliances, and white subway tile backsplash, plus an expansive unfinished basement with wooden stairs, built-in shelving, and a workshop area. Rent ranges from $500 to $700 per month in the desirable York Suburban school district.",
+    amenities: [
+      "Classic All-Brick Ranch Architecture",
+      "Attached Garage & Private Driveway",
+      "Updated Kitchen with Espresso Shaker Cabinets",
+      "Stainless Steel Refrigerator, Microwave & Gas Range",
+      "White Subway Tile Backsplash & Granite Counters",
+      "Gleaming Golden Hardwood Living Room Floors",
+      "Wide Picture Window with Horizontal Blinds",
+      "Expansive Basement with Workbench & Storage",
+      "Central Heating & Air Conditioning",
+      "Pet Friendly"
+    ],
+    communityFeatures: [
+      "Desirable East York / Suburban Neighborhood",
+      "Minutes to York Suburban Schools & Local Parks",
+      "Convenient to Route 30, I-83, Shopping & Restaurants",
+      "Quiet Tree-Lined Residential Setting"
+    ],
+    lat: 39.9328,
+    lng: -76.6895,
+    rating: 4.9,
+    reviewCount: 15,
+    yearBuilt: 2019,
+    availableDate: "Immediately Available",
+    walkScore: 68,
+    transitScore: 52,
+    deposit: "$400 - $500",
+    parkingFee: "Driveway Parking Included",
+    floorPlans: [
+      { id: "fp-161", name: "2 Bed Suburban Home", beds: 2, baths: 1, sqft: 1150, price: 500, availability: "Available Now", deposit: 400 },
+      { id: "fp-162", name: "3 Bed Family Residence", beds: 3, baths: 2, sqft: 1600, price: 700, availability: "Move-in Ready", deposit: 500 }
     ]
   }
 ];

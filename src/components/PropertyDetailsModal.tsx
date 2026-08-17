@@ -16,7 +16,6 @@ import {
   Calculator,
   Compass,
   Star,
-  ExternalLink,
   Play,
   Pause
 } from 'lucide-react';
@@ -274,21 +273,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
 
           {/* Description */}
           <div>
-            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-              <h3 className="font-bold text-base text-slate-900">About {property.name}</h3>
-              {property.sourceUrl && (
-                <a
-                  href={property.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  id="property-source-link"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition border border-blue-200/60"
-                >
-                  <span>View Original Listing on Zillow</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              )}
-            </div>
+            <h3 className="font-bold text-base text-slate-900 mb-2">About {property.name}</h3>
             <p className="text-slate-600 leading-relaxed">{property.description}</p>
           </div>
 
