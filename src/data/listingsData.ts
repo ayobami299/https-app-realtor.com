@@ -15,6 +15,14 @@ import powderBrickExterior from '../assets/images/powder_brick_exterior_17869959
 import powderKitchenDark from '../assets/images/powder_kitchen_dark_1786996007042.jpg';
 import powderLivingWindow from '../assets/images/powder_living_window_1786996018052.jpg';
 import powderBasementStairs from '../assets/images/powder_basement_stairs_1786996027703.jpg';
+import grovelandActualExt from '../assets/images/groveland_actual_ext_1787091715918.jpg';
+import grovelandActualLiv from '../assets/images/groveland_actual_liv_1787091731003.jpg';
+import grovelandActualKit from '../assets/images/groveland_actual_kit_1787091744587.jpg';
+import grovelandActualBath from '../assets/images/groveland_actual_bath_1787091756892.jpg';
+import fairfaxActualExt from '../assets/images/fairfax_actual_ext_1787092005998.jpg';
+import fairfaxActualLiv from '../assets/images/fairfax_actual_liv_1787092019668.jpg';
+import fairfaxActualBed from '../assets/images/fairfax_actual_bed_1787092032139.jpg';
+import fairfaxActualDining from '../assets/images/fairfax_actual_din_1787092044352.jpg';
 
 export const INITIAL_PROPERTIES: Property[] = [
   {
@@ -985,6 +993,136 @@ export const INITIAL_PROPERTIES: Property[] = [
     floorPlans: [
       { id: "fp-161", name: "2 Bed Suburban Home", beds: 2, baths: 1, sqft: 1150, price: 500, availability: "Available Now", deposit: 400 },
       { id: "fp-162", name: "3 Bed Family Residence", beds: 3, baths: 2, sqft: 1600, price: 700, availability: "Move-in Ready", deposit: 500 }
+    ]
+  },
+  {
+    id: 17,
+    name: "4437 Groveland Rd Classic Home",
+    address: "4437 Groveland Rd, University Heights, OH 44118",
+    city: "University Heights",
+    state: "OH",
+    zip: "44118",
+    price: "$700 – $900",
+    priceMin: 700,
+    priceMax: 900,
+    beds: "3–4",
+    bedsMin: 3,
+    bedsMax: 4,
+    baths: "1.5–2.5",
+    bathsCount: 2,
+    sqft: "1,450–2,100",
+    sqftMin: 1450,
+    sqftMax: 2100,
+    image: grovelandActualExt,
+    images: [
+      grovelandActualExt,
+      grovelandActualLiv,
+      grovelandActualKit,
+      grovelandActualBath
+    ],
+    badges: ["House for Rent", "Verified", "Rent Special"],
+    pet: true,
+    petDetails: "Pet friendly! Cats and dogs welcome with $250 pet deposit and $30/mo pet rent.",
+    managed: "Private Owner / Landlord",
+    propertyType: "House",
+    description: "Welcome to 4437 Groveland Rd in beautiful University Heights, OH! This classic brick and siding rental home features an attached garage with a wide concrete driveway, an expansive light-filled living room with gleaming golden hardwood floors, three-section bow window, decorative fireplace, and an open staircase. Enjoy an updated kitchen with white shaker cabinetry, stainless steel appliances, and wood-look flooring, plus a full tiled bathroom with pedestal sink. Rent ranges from $700 to $900 per month with rapid access to John Carroll University, University Circle, Case Western Reserve University, Cleveland Clinic, and Cedar Center shopping.",
+    amenities: [
+      "Classic Brick & Siding Architecture",
+      "Attached Garage & Wide Concrete Driveway",
+      "Expansive Living Room with Three-Section Bow Window",
+      "Gleaming Golden Hardwood Flooring & Open Staircase",
+      "Decorative Living Room Fireplace",
+      "Updated Modern Kitchen with White Shaker Cabinets",
+      "Stainless Steel Refrigerator, Microwave & Gas Range",
+      "Full Tiled Bathroom with Pedestal Sink & Grid Window",
+      "Central Air Conditioning & Heating",
+      "Pet Friendly"
+    ],
+    communityFeatures: [
+      "Peaceful Tree-Lined Street in University Heights",
+      "Minutes to John Carroll University & University Circle",
+      "Quick Commute to Cleveland Clinic & Case Western Reserve",
+      "Close to Cedar Center Shopping, Restaurants & MetroParks",
+      "Top-Rated Community & Responsive Local Management"
+    ],
+    lat: 41.4983,
+    lng: -81.5365,
+    rating: 4.9,
+    reviewCount: 16,
+    yearBuilt: 2018,
+    availableDate: "Immediately Available",
+    walkScore: 78,
+    transitScore: 58,
+    deposit: "$500 - $700",
+    parkingFee: "Private Garage & Driveway Parking Included",
+    floorPlans: [
+      { id: "fp-171", name: "3 Bed Classic Colonial", beds: 3, baths: 1.5, sqft: 1450, price: 700, availability: "Available Now", deposit: 500 },
+      { id: "fp-172", name: "4 Bed Spacious Residence", beds: 4, baths: 2.5, sqft: 2100, price: 900, availability: "Move-in Ready", deposit: 700 }
+    ]
+  },
+  {
+    id: 18,
+    name: "3340 E Fairfax Rd Residence",
+    address: "3340 E Fairfax Rd, Cleveland Heights, OH 44118",
+    city: "Cleveland Heights",
+    state: "OH",
+    zip: "44118",
+    price: "$827 – $1,340",
+    priceMin: 827,
+    priceMax: 1340,
+    beds: "3–5",
+    bedsMin: 3,
+    bedsMax: 5,
+    baths: "2–3",
+    bathsCount: 2.5,
+    sqft: "1,680–2,650",
+    sqftMin: 1680,
+    sqftMax: 2650,
+    image: fairfaxActualExt,
+    images: [
+      fairfaxActualExt,
+      fairfaxActualLiv,
+      fairfaxActualBed,
+      fairfaxActualDining
+    ],
+    badges: ["House for Rent", "Verified", "Rent Special"],
+    pet: true,
+    petDetails: "Pet friendly! Cats and dogs allowed with $250 pet deposit and $35/mo pet rent.",
+    managed: "Private Owner / Landlord",
+    propertyType: "House",
+    description: "Welcome to 3340 E Fairfax Rd in historic Cleveland Heights, OH! This classic American Foursquare craftsman home features a wide covered front porch with white columns, red brick steps, dormer roofline, and black window shutters with crescent cutouts. Inside, enjoy rich hardwood floors, an expansive formal living room with authentic dark-stained wood built-in glass cabinetry flanking a brick fireplace with tile hearth, an open dark wood trimmed archway to the dining room, and sunny bedrooms with ceiling fans. Rent ranges from $827 to $1,340 per month, moments from Cedar-Fairmount, Coventry Village, Case Western Reserve University, University Circle, and the Cleveland Clinic.",
+    amenities: [
+      "Classic American Foursquare Craftsman Architecture",
+      "Wide Covered Front Porch with White Columns",
+      "Red Brick Foundation & Front Entry Steps",
+      "Authentic Dark Wood Built-in Glass-Front Cabinetry",
+      "Brick Fireplace with Red Tile Hearth & Wood Mantel",
+      "Gleaming Hardwood Floors Throughout",
+      "Wide Dark Wood Cased Archways & Window Trims",
+      "Ceiling Fans & Multi-Pane Double-Hung Windows",
+      "Central Heating & Air Conditioning",
+      "Pet Friendly"
+    ],
+    communityFeatures: [
+      "Prestigious Cleveland Heights Historic Neighborhood",
+      "Walking Distance to Cedar-Fairmount & Coventry Village",
+      "Minutes to University Circle, Case Western Reserve & CIM",
+      "Quick Commute to Cleveland Clinic & University Hospitals",
+      "Lush Tree-Canopied Residential Street"
+    ],
+    lat: 41.4988,
+    lng: -81.5645,
+    rating: 4.9,
+    reviewCount: 19,
+    yearBuilt: 2017,
+    availableDate: "Immediately Available",
+    walkScore: 82,
+    transitScore: 64,
+    deposit: "$600 - $900",
+    parkingFee: "Detached Garage & Driveway Parking Included",
+    floorPlans: [
+      { id: "fp-181", name: "3 Bed Classic Craftsman", beds: 3, baths: 2, sqft: 1680, price: 827, availability: "Available Now", deposit: 600 },
+      { id: "fp-182", name: "5 Bed Executive Residence", beds: 5, baths: 3, sqft: 2650, price: 1340, availability: "Move-in Ready", deposit: 900 }
     ]
   }
 ];
