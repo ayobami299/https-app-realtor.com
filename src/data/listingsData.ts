@@ -19,10 +19,6 @@ import grovelandActualExt from '../assets/images/groveland_actual_ext_1787091715
 import grovelandActualLiv from '../assets/images/groveland_actual_liv_1787091731003.jpg';
 import grovelandActualKit from '../assets/images/groveland_actual_kit_1787091744587.jpg';
 import grovelandActualBath from '../assets/images/groveland_actual_bath_1787091756892.jpg';
-import fairfaxActualExt from '../assets/images/fairfax_actual_ext_1787092005998.jpg';
-import fairfaxActualLiv from '../assets/images/fairfax_actual_liv_1787092019668.jpg';
-import fairfaxActualBed from '../assets/images/fairfax_actual_bed_1787092032139.jpg';
-import fairfaxActualDining from '../assets/images/fairfax_actual_din_1787092044352.jpg';
 
 export const INITIAL_PROPERTIES: Property[] = [
   {
@@ -1078,12 +1074,11 @@ export const INITIAL_PROPERTIES: Property[] = [
     sqft: "1,680–2,650",
     sqftMin: 1680,
     sqftMax: 2650,
-    image: fairfaxActualExt,
+    image: "https://i.postimg.cc/hhrwQhr3/IMG-20260818-WA0114.jpg",
     images: [
-      fairfaxActualExt,
-      fairfaxActualLiv,
-      fairfaxActualBed,
-      fairfaxActualDining
+      "https://i.postimg.cc/hhrwQhr3/IMG-20260818-WA0114.jpg",
+      "https://i.postimg.cc/jCX9nCX3/IMG-20260818-WA0112.jpg",
+      "https://i.postimg.cc/rzJbRzJf/IMG-20260818-WA0113.jpg"
     ],
     badges: ["House for Rent", "Verified", "Rent Special"],
     pet: true,
