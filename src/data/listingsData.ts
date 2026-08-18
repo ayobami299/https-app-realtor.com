@@ -15,10 +15,6 @@ import powderBrickExterior from '../assets/images/powder_brick_exterior_17869959
 import powderKitchenDark from '../assets/images/powder_kitchen_dark_1786996007042.jpg';
 import powderLivingWindow from '../assets/images/powder_living_window_1786996018052.jpg';
 import powderBasementStairs from '../assets/images/powder_basement_stairs_1786996027703.jpg';
-import grovelandActualExt from '../assets/images/groveland_actual_ext_1787091715918.jpg';
-import grovelandActualLiv from '../assets/images/groveland_actual_liv_1787091731003.jpg';
-import grovelandActualKit from '../assets/images/groveland_actual_kit_1787091744587.jpg';
-import grovelandActualBath from '../assets/images/groveland_actual_bath_1787091756892.jpg';
 
 export const INITIAL_PROPERTIES: Property[] = [
   {
@@ -1009,12 +1005,12 @@ export const INITIAL_PROPERTIES: Property[] = [
     sqft: "1,450–2,100",
     sqftMin: 1450,
     sqftMax: 2100,
-    image: grovelandActualExt,
+    image: "https://i.postimg.cc/jn2S0mc9/IMG-20260818-WA0108.jpg",
     images: [
-      grovelandActualExt,
-      grovelandActualLiv,
-      grovelandActualKit,
-      grovelandActualBath
+      "https://i.postimg.cc/jn2S0mc9/IMG-20260818-WA0108.jpg",
+      "https://i.postimg.cc/jn2S0mck/IMG-20260818-WA0110.jpg",
+      "https://i.postimg.cc/y3x84tjQ/IMG-20260818-WA0111.jpg",
+      "https://i.postimg.cc/H8nkDRz6/IMG-20260818-WA0109.jpg"
     ],
     badges: ["House for Rent", "Verified", "Rent Special"],
     pet: true,
